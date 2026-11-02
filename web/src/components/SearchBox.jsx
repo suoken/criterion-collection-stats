@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getCelebsIndex, getFilmsIndex, getPeopleIndex } from "../api.js";
+import { normalizeText } from "../text.js";
 
 // One flat searchable list of films, people, and celebrities.
 export default function SearchBox() {
@@ -9,8 +10,11 @@ export default function SearchBox() {
   const [open, setOpen] = useState(false);
   const wrapRef = useRef(null);
   const navigate = useNavigate();
+  // The indexes total ~1.5 MB, so they load on first focus, not page load.
+  const [wanted, setWanted] = useState(false);
 
   useEffect(() => {
+    if (!wanted) return;
     Promise.all([getFilmsIndex(), getPeopleIndex(), getCelebsIndex()]).then(
       ([films, people, celebs]) => {
         const list = [];
@@ -29,10 +33,11 @@ export default function SearchBox() {
           list.push({ kind: "Closet Visitor", label: c.name, sub: null,
             weight: c.picks + 50, to: `/celeb/${id}` });
         }
+        for (const e of list) e.norm = e.label ? normalizeText(e.label) : "";
         setEntries(list);
       }
-    );
-  }, []);
+    ).catch(console.error);
+  }, [wanted]);
 
   useEffect(() => {
     const close = (e) => {
@@ -44,12 +49,13 @@ export default function SearchBox() {
 
   const results = useMemo(() => {
     if (!entries || q.trim().length < 2) return [];
-    const needle = q.trim().toLowerCase();
+    const needle = normalizeText(q);
+    if (!needle) return [];
     return entries
-      .filter((e) => e.label && e.label.toLowerCase().includes(needle))
+      .filter((e) => e.norm.includes(needle))
       .sort((a, b) => {
-        const aStarts = a.label.toLowerCase().startsWith(needle) ? 1 : 0;
-        const bStarts = b.label.toLowerCase().startsWith(needle) ? 1 : 0;
+        const aStarts = a.norm.startsWith(needle) ? 1 : 0;
+        const bStarts = b.norm.startsWith(needle) ? 1 : 0;
         return bStarts - aStarts || (b.weight || 0) - (a.weight || 0);
       })
       .slice(0, 12);
@@ -68,8 +74,8 @@ export default function SearchBox() {
         type="search"
         placeholder="Search a film, director, actor, or star…"
         value={q}
-        onChange={(e) => { setQ(e.target.value); setOpen(true); }}
-        onFocus={() => setOpen(true)}
+        onChange={(e) => { setQ(e.target.value); setOpen(true); setWanted(true); }}
+        onFocus={() => { setOpen(true); setWanted(true); }}
         aria-label="Search films, directors, actors, and closet visitors"
       />
       {open && results.length > 0 && (

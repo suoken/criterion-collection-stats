@@ -1,3 +1,5 @@
+import { normalizeText as normalizeName } from "./text.js";
+
 // Lookups against IMDb's public search-suggestion endpoint (the same JSON
 // their site search box uses). Definitive results — including "no match" —
 // are cached in localStorage so each subject is looked up at most once per
@@ -39,18 +41,6 @@ async function cachedLookup(key, query, pick) {
     localStorage.setItem(key, result ? JSON.stringify(result) : "");
   } catch { /* storage full — memory cache still applies */ }
   return result;
-}
-
-// Punctuation- and diacritic-insensitive compare, so "Chishû Ryû" matches
-// "Chishu Ryu" and "J.R." matches "JR".
-function normalizeName(name) {
-  return name
-    .normalize("NFKD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .toLowerCase()
-    .replace(/[^a-z0-9 ]/g, "")
-    .replace(/\s+/g, " ")
-    .trim();
 }
 
 // Names where the bare query ranks unrelated stars first (searching "jr"
