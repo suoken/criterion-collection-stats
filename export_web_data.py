@@ -197,8 +197,12 @@ def main():
         if len(plist) > 1:
             for i, p in enumerate(sorted(plist, key=lambda x: x["name"])[1:], 2):
                 p["slug"] = f"{slug}-{i}"
-    dump("people.json", sorted(people.values(),
-                               key=lambda p: -(p["directorPicks"] + p["actorPicks"])))
+    # The index only lists people with at least one pick: the ~3.8k credited
+    # solely on unpicked related films are search noise. Their person/ pages
+    # are still written below, and slugs above were resolved over everyone.
+    dump("people.json", sorted(
+        (p for p in people.values() if p["directorPicks"] + p["actorPicks"] > 0),
+        key=lambda p: -(p["directorPicks"] + p["actorPicks"])))
 
     # ---- detail: films ----
     for fid, f in films.items():
