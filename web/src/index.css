@@ -517,6 +517,92 @@ img { max-width: 100%; display: block; }
   white-space: nowrap;
 }
 
+/* ————— spine-shelf leaderboard ————— */
+
+.bookcase {
+  max-width: 920px;
+  margin: 0 auto;
+  border: 12px solid var(--maroon);
+  border-radius: 3px;
+  background: var(--cream-panel);
+  box-shadow:
+    inset 0 0 0 1px rgba(35, 29, 23, 0.25),
+    0 2px 0 rgba(35, 29, 23, 0.2);
+}
+.shelf-row {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 18px;
+  align-items: end;
+  padding: 14px 16px 0;
+  border-bottom: 8px solid var(--maroon);
+  cursor: pointer;
+}
+.shelf-row:last-child { border-bottom: none; }
+.shelf-row:hover { background: var(--cream-deep); }
+.shelf-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  align-self: center;
+  padding-bottom: 12px;
+  min-width: 0;
+}
+.shelf-meta .rank {
+  font-family: var(--font-display);
+  font-size: 19px;
+  color: var(--maroon);
+  min-width: 28px;
+  text-align: center;
+}
+.shelf-meta .thumb {
+  width: 40px;
+  height: 50px;
+  flex: none;
+  object-fit: cover;
+  border: 1px solid var(--maroon);
+  border-radius: 25% 25% 1px 1px / 9% 9% 1px 1px;
+}
+.shelf-meta .who { display: flex; flex-direction: column; min-width: 0; }
+.shelf-meta .smallcaps-name { font-size: 14px; }
+.shelf-meta .sub { font-size: 12.5px; color: var(--ink-soft); font-style: italic; }
+.shelf-spines {
+  display: flex;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 2px;
+  min-height: 58px;
+}
+.spine {
+  width: 9px;
+  flex: none;
+  border-radius: 1.5px 1.5px 0 0;
+  box-shadow: inset 0 0 0 0.5px rgba(35, 29, 23, 0.35);
+  background-image: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0.22),
+    rgba(255, 255, 255, 0) 45%,
+    rgba(0, 0, 0, 0.12)
+  );
+}
+.shelf-count {
+  font-family: var(--font-label);
+  font-weight: 600;
+  color: var(--crimson);
+  font-size: 14px;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+  margin-left: 10px;
+  padding-bottom: 3px;
+}
+
+@media (max-width: 760px) {
+  .shelf-row { grid-template-columns: 1fr; gap: 2px; padding-top: 10px; }
+  .shelf-meta { padding-bottom: 0; }
+  .shelf-spines { min-height: 48px; }
+  .spine { width: 7px; }
+}
+
 /* ————— film page ————— */
 
 .film-hero {

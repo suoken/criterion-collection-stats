@@ -10,6 +10,39 @@ const TITLES = {
   visitors: { eyebrow: "The Guest Book", title: "Closet Visitors" },
 };
 
+/* Every pick is drawn as one disc spine on the shelf. Colors and heights
+   are hashed from the row key so shelves look organic but never reshuffle. */
+const SPINE_COLORS = [
+  "#b01f24", "#6e1f1f", "#b98f3e", "#57493a",
+  "#2f4a4d", "#231d17", "#8c5a2b", "#e4d7bd",
+];
+
+function spineSeed(key, i) {
+  const s = `${key}:${i}`;
+  let h = 2166136261;
+  for (let j = 0; j < s.length; j++) {
+    h ^= s.charCodeAt(j);
+    h = Math.imul(h, 16777619);
+  }
+  return h >>> 0;
+}
+
+function Spines({ rowKey, count }) {
+  return Array.from({ length: count }, (_, i) => {
+    const seed = spineSeed(rowKey, i);
+    return (
+      <i
+        key={i}
+        className="spine"
+        style={{
+          height: 38 + (seed % 15),
+          backgroundColor: SPINE_COLORS[seed % SPINE_COLORS.length],
+        }}
+      />
+    );
+  });
+}
+
 const ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 
 function indexLetter(name) {
@@ -178,37 +211,45 @@ export default function Browse({ kind }) {
             </div>
           </div>
         )}
-        <div className="ledger" style={{ maxWidth: 720, margin: "0 auto" }}>
+        <div className="bookcase">
           {visible.slice(0, limit).map((r, i) => (
             <div
               key={r.key}
-              className="ledger-row"
+              className="shelf-row"
               onClick={() => navigate(r.to)}
               onKeyDown={(e) => e.key === "Enter" && navigate(r.to)}
               role="link"
               tabIndex={0}
             >
-              <span className="rank">{i + 1}</span>
-              {r.thumb ? (
-                <img className="thumb" src={r.thumb} alt="" loading="lazy" />
-              ) : (
-                <span className="rank" style={{ color: "var(--gold)" }}>◆</span>
-              )}
-              <span className="who">
-                <span className="smallcaps-name">{r.name}</span>
-                {r.badge && (
-                  <span
-                    className="badge"
-                    title={r.badge.label}
-                    role="img"
-                    aria-label={r.badge.label}
-                  >
-                    {" "}{r.badge.icon}
+              <div className="shelf-meta">
+                <span className="rank">{i + 1}</span>
+                {r.thumb && <img className="thumb" src={r.thumb} alt="" loading="lazy" />}
+                <span className="who">
+                  <span className="smallcaps-name">
+                    {r.name}
+                    {r.badge && (
+                      <span
+                        className="badge"
+                        title={r.badge.label}
+                        role="img"
+                        aria-label={r.badge.label}
+                      >
+                        {" "}{r.badge.icon}
+                      </span>
+                    )}
                   </span>
-                )}
-                {r.sub && <span className="sub"> {r.sub}</span>}
-              </span>
-              <span className="count">{r.count} {r.count === 1 ? "pick" : "picks"}</span>
+                  {r.sub && <span className="sub">{r.sub}</span>}
+                </span>
+              </div>
+              <div
+                className="shelf-spines"
+                aria-label={`${r.count} ${r.count === 1 ? "pick" : "picks"}`}
+              >
+                <Spines rowKey={r.key} count={r.count} />
+                <span className="shelf-count">
+                  {r.count} {r.count === 1 ? "pick" : "picks"}
+                </span>
+              </div>
             </div>
           ))}
         </div>

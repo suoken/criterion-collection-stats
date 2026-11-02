@@ -41,13 +41,36 @@ async function cachedLookup(key, query, pick) {
   return result;
 }
 
+// Punctuation- and diacritic-insensitive compare, so "Chishû Ryû" matches
+// "Chishu Ryu" and "J.R." matches "JR".
+function normalizeName(name) {
+  return name
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9 ]/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+// Names where the bare query ranks unrelated stars first (searching "jr"
+// returns Denzel Washington, not the artist JR): query with extra context
+// and pin the expected nm-id.
+const PEOPLE_OVERRIDES = {
+  jr: { query: "jr artist", id: "nm2346254" },
+};
+
 // People: photo + profile id. Entries may have img: null but still carry
-// imdbId for profile links.
+// imdbId for profile links. Only a (normalized) exact name match counts —
+// a missing photo beats the wrong person's photo. Cache key is imdb3: so
+// results poisoned by the old most-popular-result fallback are ignored.
 export function lookupHeadshot(name) {
-  return cachedLookup(`imdb2:${name}`, name, (entries) => {
+  const override = PEOPLE_OVERRIDES[normalizeName(name)];
+  return cachedLookup(`imdb3:${name}`, override?.query || name, (entries) => {
     const people = entries.filter((x) => x.id?.startsWith("nm"));
-    const exact = people.find((x) => x.l?.toLowerCase() === name.toLowerCase());
-    const hit = exact || people[0];
+    const hit = override
+      ? people.find((x) => x.id === override.id)
+      : people.find((x) => normalizeName(x.l || "") === normalizeName(name));
     return hit
       ? { img: hit.i?.imageUrl || null, imdbId: hit.id, matched: hit.l }
       : null;

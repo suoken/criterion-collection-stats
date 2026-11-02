@@ -12,7 +12,12 @@ import Browse from "./pages/Browse.jsx";
 
 function ScrollToTop() {
   const { pathname } = useLocation();
-  useEffect(() => window.scrollTo(0, 0), [pathname]);
+  // Braces matter: an implicit return would hand scrollTo's return value to
+  // React as the effect cleanup, which crashes the whole tree ("destroy is
+  // not a function") in browsers where an extension patches scrollTo.
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
   return null;
 }
 
