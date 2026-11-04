@@ -69,10 +69,15 @@ export default function SearchBox() {
 
   return (
     <div className="search-wrap" ref={wrapRef}>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+        <circle cx="11" cy="11" r="7" />
+        <path d="m20 20-4.2-4.2" />
+      </svg>
       <input
         className="search-input"
         type="search"
-        placeholder="Search a film, director, actor, or star…"
+        placeholder="Search the archive"
         value={q}
         onChange={(e) => { setQ(e.target.value); setOpen(true); setWanted(true); }}
         onFocus={() => { setOpen(true); setWanted(true); }}

@@ -42,7 +42,6 @@ export default function Person() {
           to={`/film/${f.g}`}
           tally={f.n || 0}
           tallyLabel="picks"
-          tall
         />
       ));
 
@@ -53,14 +52,14 @@ export default function Person() {
 
   return (
     <div className="page">
-      <section className="section center">
+      <section className="section">
         <span className="eyebrow">{roles} in the Collection</span>
         <h2 className="display" style={{ fontSize: "clamp(34px, 6vw, 64px)", margin: "10px 0" }}>
           {person.name}
         </h2>
         {headshot?.img && (
           <a
-            className="person-headshot portrait-frame"
+            className="person-headshot"
             href={`https://www.imdb.com/name/${headshot.imdbId}/`}
             target="_blank"
             rel="noopener noreferrer"
@@ -105,7 +104,7 @@ export default function Person() {
 
       {person.pickedBy.length > 0 && (
         <Section eyebrow="Their Admirers" title="Picked By">
-          <div className="chip-row" style={{ justifyContent: "center" }}>
+          <div className="chip-row">
             {person.pickedBy.map((c) => (
               <button key={c.id} className="chip" onClick={() => navigate(`/celeb/${c.id}`)}>
                 {c.name}

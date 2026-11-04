@@ -81,7 +81,6 @@ export default function Film() {
           to={`/film/${f.g}`}
           tally={f.n || 0}
           tallyLabel={f.n === 1 ? "pick" : "picks"}
-          tall
         />
       ));
 
@@ -178,9 +177,9 @@ export default function Film() {
             {film.cast.map((c, i) => (
               <div className="cast-pair" key={i}>
                 {c.slug ? (
-                  <Link className="smallcaps-name" to={`/person/${c.slug}`}>{c.actor}</Link>
+                  <Link className="item-name" to={`/person/${c.slug}`}>{c.actor}</Link>
                 ) : (
-                  <span className="smallcaps-name" style={{ color: "var(--ink)" }}>{c.actor}</span>
+                  <span className="item-name" style={{ color: "var(--ink)" }}>{c.actor}</span>
                 )}
                 {c.role && <span className="role">{c.role}</span>}
               </div>

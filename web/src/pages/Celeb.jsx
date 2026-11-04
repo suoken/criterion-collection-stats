@@ -33,14 +33,14 @@ export default function Celeb() {
 
   return (
     <div className="page">
-      <section className="section center">
+      <section className="section">
         <span className="eyebrow">Closet Visitor</span>
         <h2 className="display" style={{ fontSize: "clamp(34px, 6vw, 64px)", margin: "10px 0" }}>
           {celeb.name}
         </h2>
         {headshot?.img && (
           <a
-            className="person-headshot portrait-frame"
+            className="person-headshot"
             href={`https://www.imdb.com/name/${headshot.imdbId}/`}
             target="_blank"
             rel="noopener noreferrer"
@@ -73,11 +73,11 @@ export default function Celeb() {
           title={s.with.length ? `With ${s.with.map((w) => w.name).join(" & ")}` : "The Visit"}
         >
           {s.description && (
-            <p className="center" style={{ maxWidth: 640, margin: "0 auto 26px", fontStyle: "italic" }}>
+            <p style={{ maxWidth: 640, margin: "0 0 20px", fontStyle: "italic" }}>
               {s.description}
             </p>
           )}
-          <div className="action-row" style={{ justifyContent: "center", marginBottom: 30 }}>
+          <div className="action-row" style={{ marginBottom: 30 }}>
             <a className="btn solid" href={s.url} target="_blank" rel="noopener noreferrer">
               ▶ Watch on Criterion
             </a>
@@ -99,7 +99,6 @@ export default function Celeb() {
                   to={`/film/${f.g}`}
                   tally={f.n}
                   tallyLabel="picks"
-                  tall
                 />
               ))}
           </div>

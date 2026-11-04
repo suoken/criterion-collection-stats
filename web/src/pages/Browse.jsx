@@ -13,8 +13,8 @@ const TITLES = {
 /* Every pick is drawn as one disc spine on the shelf. Colors and heights
    are hashed from the row key so shelves look organic but never reshuffle. */
 const SPINE_COLORS = [
-  "#b01f24", "#6e1f1f", "#b98f3e", "#57493a",
-  "#2f4a4d", "#231d17", "#8c5a2b", "#e4d7bd",
+  "#1d1c1a", "#3d3a35", "#8b2e22", "#c49a2c",
+  "#d8d3c7", "#556769", "#a0582c", "#efece4",
 ];
 
 function spineSeed(key, i) {
@@ -55,9 +55,11 @@ export default function Browse({ kind }) {
   const [people, setPeople] = useState(null);
   const [celebs, setCelebs] = useState(null);
   const [limit, setLimit] = useState(50);
-  const [cap, setCap] = useState(null); // max picks to show; null = no cap yet
-  // visitors letter selection lives in the URL so the back button restores it
+  // the visitors letter and the pick cap live in the URL, so the back
+  // button restores them and the home page can link to /films?max=1
   const [searchParams, setSearchParams] = useSearchParams();
+  const cap = Number(searchParams.get("max")) || null; // null = no cap
+  const setCap = (n) => setSearchParams({ max: n }, { replace: true });
   const letter = searchParams.get("letter"); // null = top-25 view
   const setLetter = (l) =>
     setSearchParams(l ? { letter: l } : {}, { replace: true });
@@ -66,7 +68,6 @@ export default function Browse({ kind }) {
 
   useEffect(() => {
     setLimit(50);
-    setCap(null);
     if (kind === "films") getFilmsIndex().then(setFilms).catch(console.error);
     else if (kind === "visitors") getCelebsIndex().then(setCelebs).catch(console.error);
     else getPeopleIndex().then(setPeople).catch(console.error);
@@ -158,7 +159,7 @@ export default function Browse({ kind }) {
             <h3 className="display letter-head">
               {letter || "The Most Devoted"}
             </h3>
-            <div className="ledger" style={{ maxWidth: 720, margin: "0 auto" }}>
+            <div className="ledger">
               {showing.map((r, i) => (
                 <div
                   key={r.key}
@@ -169,12 +170,12 @@ export default function Browse({ kind }) {
                   tabIndex={0}
                 >
                   {letter ? (
-                    <span className="rank" style={{ color: "var(--gold)" }}>◆</span>
+                    <span className="rank" style={{ color: "var(--ink-faint)" }}>◆</span>
                   ) : (
                     <span className="rank">{i + 1}</span>
                   )}
                   <span className="who">
-                    <span className="smallcaps-name">{r.name}</span>
+                    <span className="item-name">{r.name}</span>
                     {r.sub && <span className="sub"> {r.sub}</span>}
                   </span>
                   <span className="count">{r.count} {r.count === 1 ? "pick" : "picks"}</span>
@@ -225,7 +226,7 @@ export default function Browse({ kind }) {
                 <span className="rank">{i + 1}</span>
                 {r.thumb && <img className="thumb" src={r.thumb} alt="" loading="lazy" />}
                 <span className="who">
-                  <span className="smallcaps-name">
+                  <span className="item-name">
                     {r.name}
                     {r.badge && (
                       <span
@@ -254,7 +255,7 @@ export default function Browse({ kind }) {
           ))}
         </div>
         {limit < visible.length && (
-          <p className="center mt-lg">
+          <p className="mt-lg">
             <button className="btn" onClick={() => setLimit(limit + 100)}>
               Show more ({visible.length - limit} remaining)
             </button>

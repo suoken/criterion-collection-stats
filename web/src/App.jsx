@@ -31,34 +31,28 @@ export default function App() {
     <>
       <ScrollToTop />
       <header className="site-header container">
-        <div className="presents">
-          <span className="eyebrow">The Criterion Collection Presents</span>
+        <div className="masthead">
+          <NavLink to="/" className="logo">Closet Picks</NavLink>
+          <span className="tagline eyebrow">An independent Criterion Closet archive</span>
         </div>
-        <h1 className="display site-title">
-          <NavLink to="/">The Closet Picks</NavLink>
-        </h1>
-        {stats && (
-          <div className="site-sub">
-            <span className="stat-bit eyebrow"><b>{stats.counts.sessions}</b> closet visits</span>
-            <span className="stat-bit eyebrow"><b>{stats.counts.totalPicks.toLocaleString()}</b> picks</span>
-            <span className="stat-bit eyebrow"><b>{stats.counts.filmsPicked.toLocaleString()}</b> films</span>
-            <span className="stat-bit eyebrow"><b>{stats.counts.celebrities}</b> stars</span>
-          </div>
-        )}
-        <nav className="site-nav">
-          <ul>
-            <li><NavLink to="/" end>Marquee</NavLink></li>
-            <li><NavLink to="/films">Films</NavLink></li>
-            <li><NavLink to="/directors">Directors</NavLink></li>
-            <li><NavLink to="/actors">Actors</NavLink></li>
-            <li><NavLink to="/decades">Decades</NavLink></li>
-            <li><NavLink to="/countries">Countries</NavLink></li>
-            <li><NavLink to="/visitors">Visitors</NavLink></li>
-          </ul>
-        </nav>
-        <div className="mt-lg">
+        <div className="navbar">
+          <nav className="site-nav">
+            <ul>
+              <li><NavLink to="/" end>Discover</NavLink></li>
+              <li><NavLink to="/films">Films</NavLink></li>
+              <li><NavLink to="/directors">Directors</NavLink></li>
+              <li><NavLink to="/actors">Actors</NavLink></li>
+              <li><NavLink to="/visitors">Visitors</NavLink></li>
+            </ul>
+          </nav>
           <SearchBox />
         </div>
+        {stats && (
+          <p className="site-stats">
+            {stats.counts.sessions} visits / {stats.counts.totalPicks.toLocaleString()} picks
+            {" / "}{stats.counts.filmsPicked.toLocaleString()} films
+          </p>
+        )}
       </header>
 
       <main className="container">
@@ -76,14 +70,8 @@ export default function App() {
         </Routes>
       </main>
 
-      <footer className="site-footer">
-        <div className="diamond-rule"><span>◆</span></div>
-        <p className="eyebrow" style={{ marginTop: 16 }}>A Statistical Picture</p>
-        <p>
-          Every film links back to its page at criterion.com. Data gathered from
-          the Criterion Collection’s Closet Picks archive. This is a fan project,
-          not affiliated with the Criterion Collection.
-        </p>
+      <footer className="site-footer container">
+        <p>A fan-made archive. Not affiliated with the Criterion Collection.</p>
       </footer>
     </>
   );

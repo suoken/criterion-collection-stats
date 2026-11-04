@@ -67,14 +67,14 @@ export default function Countries() {
         </nav>
         <div className="letter-group">
           <h3 className="display letter-head">{selected.country}</h3>
-          <p className="center decade-summary">
+          <p className="decade-summary">
             <span className="eyebrow">
               <b>{selected.films.length}</b>{" "}
               {selected.films.length === 1 ? "film" : "films"} picked ·{" "}
               <b>{selected.picks}</b> {selected.picks === 1 ? "pick" : "picks"} in total
             </span>
           </p>
-          <div className="ledger" style={{ maxWidth: 720, margin: "0 auto" }}>
+          <div className="ledger">
             {selected.films.map((f, i) => (
               <div
                 key={f.g}
@@ -88,10 +88,10 @@ export default function Countries() {
                 {f.c ? (
                   <img className="thumb" src={f.c} alt="" loading="lazy" />
                 ) : (
-                  <span className="rank" style={{ color: "var(--gold)" }}>◆</span>
+                  <span className="rank" style={{ color: "var(--ink-faint)" }}>◆</span>
                 )}
                 <span className="who">
-                  <span className="smallcaps-name">{f.t}</span>
+                  <span className="item-name">{f.t}</span>
                   <span className="sub">
                     {" "}{[f.d, f.y].filter(Boolean).join(" · ")}
                   </span>
